@@ -2,23 +2,23 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../../services/noteService";
+import css from "./NoteForm.module.css";
 import type { NoteTag } from "../../types/note";
 
+interface FormValues {
+  title: string;
+  content: string;
+  tag: NoteTag;
+}
 const schema = Yup.object({
-  title: Yup.string().min(3).max(50).required(),
+  title: Yup.string().min(3).max(50).required("Title is required"),
   content: Yup.string().max(500),
-  tag: Yup.string().required(),
+  tag: Yup.string().required("Tag is required"),
 });
 
 interface NoteFormProps {
   onClose: () => void;
 }
-
-type NoteFormValues = {
-  title: string;
-  content: string;
-  tag: NoteTag;
-};
 
 export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
@@ -32,29 +32,52 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   });
 
   return (
-    <Formik<NoteFormValues>
-  initialValues={{ title: "", content: "", tag: "Todo" }}
+    <Formik<FormValues>
+  initialValues={{
+    title: "",
+    content: "",
+    tag: "Todo",
+  }}
   validationSchema={schema}
   onSubmit={(values) => mutation.mutate(values)}
 >
-      <Form>
-        <Field name="title" placeholder="Title" />
-        <ErrorMessage name="title" component="span" />
-       <Field as="textarea" name="content" placeholder="Content" />
-       <ErrorMessage name="title" component="span" />
-        <Field as="select" name="tag">
-          <ErrorMessage name="tag" component="span" />
-          <option value="Todo">Todo</option>
-          <option value="Work">Work</option>
-          <option value="Personal">Personal</option>
-          <option value="Meeting">Meeting</option>
-          <option value="Shopping">Shopping</option>
-        </Field>
+      <Form className={css.form}>
+        
+        <div className={css.formGroup}>
+          <Field name="title" className={css.input} />
+          <ErrorMessage name="title" component="span" className={css.error} />
+        </div>
 
-        <button type="button" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit">Create note</button>
+        
+        <div className={css.formGroup}>
+          <Field
+            as="textarea"
+            name="content"
+            className={css.textarea}
+          />
+          <ErrorMessage name="content" component="span" className={css.error} />
+        </div>
+
+        
+        <div className={css.formGroup}>
+          <Field as="select" name="tag" className={css.select}>
+            <option value="Todo">Todo</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Meeting">Meeting</option>
+            <option value="Shopping">Shopping</option>
+          </Field>
+
+          
+          <ErrorMessage name="tag" component="span" className={css.error} />
+        </div>
+
+        <div className={css.actions}>
+          <button type="button" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit">Create note</button>
+        </div>
       </Form>
     </Formik>
   );
