@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../../services/noteService";
@@ -39,8 +39,11 @@ export default function NoteForm({ onClose }: NoteFormProps) {
 >
       <Form>
         <Field name="title" placeholder="Title" />
-        <Field name="content" placeholder="Content" />
+        <ErrorMessage name="title" component="span" />
+       <Field as="textarea" name="content" placeholder="Content" />
+       <ErrorMessage name="title" component="span" />
         <Field as="select" name="tag">
+          <ErrorMessage name="tag" component="span" />
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>

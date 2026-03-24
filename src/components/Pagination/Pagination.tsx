@@ -1,4 +1,13 @@
-import ReactPaginate from "react-paginate";
+import type { ComponentType } from "react";
+import ReactPaginateModule from "react-paginate";
+import type { ReactPaginateProps } from "react-paginate";
+
+
+type ModuleWithDefault<T> = { default: T };
+
+const ReactPaginate = (
+  ReactPaginateModule as unknown as ModuleWithDefault<ComponentType<ReactPaginateProps>>
+).default;
 
 interface PaginationProps {
   page: number;
@@ -14,7 +23,9 @@ export default function Pagination({
   return (
     <ReactPaginate
       pageCount={totalPages}
-      onPageChange={({ selected }) => onChange(selected + 1)}
+      onPageChange={({ selected }: { selected: number }) =>
+        onChange(selected + 1)
+      }
       forcePage={page - 1}
     />
   );
